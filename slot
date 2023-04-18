@@ -1,0 +1,50 @@
+import pygame
+import random
+
+# 初期設定
+pygame.init()
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("スロットマシン")
+
+# 画像の読み込み
+bg_image = pygame.image.load("background.png").convert()
+lever_image = pygame.image.load("lever.png").convert_alpha()
+symbols_image = pygame.image.load("symbols.png").convert_alpha()
+
+# スロットシンボルのリスト
+symbols = ['7', 'bar', 'cherry', 'lemon']
+
+# スロットシンボルの位置
+symbol_positions = [(50, 100), (250, 100), (450, 100)]
+
+# レバーを引く関数
+def pull_lever():
+    # ランダムにスロットシンボルを選択
+    result = [random.choice(symbols) for i in range(3)]
+    return result
+
+# メインループ
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            # レバーを引く
+            result = pull_lever()
+
+    # 背景を描画
+    screen.blit(bg_image, (0, 0))
+
+    # スロットシンボルを描画
+    for i, symbol in enumerate(result):
+        symbol_rect = symbols_image.get_rect(topleft=symbol_positions[i])
+        symbol_rect.move_ip(symbols.index(symbol) * symbol_rect.width, 0)
+        screen.blit(symbols_image, symbol_rect)
+
+    # レバーを描画
+    screen.blit(lever_image, (540, 350))
+
+    pygame.display.flip()
+
+pygame.quit()
